@@ -6,11 +6,11 @@ SRC_DIR=../../src/
 LIBS=-lao
 SOURCES_PATH=$(addsuffix .cpp, $(addprefix $(SRC_DIR), $(SOURCES)))
 
-all: tonePlayer
+all: tonePlayer.out
 
-tonePlayer: main.cpp $(SOURCES_PATH)
-	$(CC) $(LIBS) $(FLAGS) main.cpp $(SOURCES_PATH) -o tonePlayer
+tonePlayer.out: main.cpp $(SOURCES_PATH)
+	$(CC) $(LIBS) $(FLAGS) main.cpp $(SOURCES_PATH) -o tonePlayer.out
 
 clean:
-	rm -f tonePlayer
+	rm -f tonePlayer.out
 
