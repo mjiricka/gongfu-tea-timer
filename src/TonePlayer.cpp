@@ -12,12 +12,12 @@
 using std::runtime_error;
 
 
-const char bits = 16;
-const char channels = 2;
-const int rate = 44100;
-const int sampleBits = (bits / 8) * channels;
-const int totalBufferSize = sampleBits * rate;
-const int max = 0.75 * (1 << 15);  // Constant 0.75 is used in official libao example.
+static const char bits = 16;
+static const char channels = 2;
+static const int rate = 44100;
+static const int sampleBits = (bits / 8) * channels;
+static const int totalBufferSize = sampleBits * rate;
+static const int max = 0.75 * (1 << 15);  // Constant 0.75 is used in official libao example.
 
 
 void TonePlayer::init() {

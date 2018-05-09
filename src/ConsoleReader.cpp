@@ -9,7 +9,7 @@
 // Inspiration: https://gist.github.com/whyrusleeping/3983293
 
 
-void setKeyboardNonBlock(termios *initialSettings)
+static void setKeyboardNonBlock(termios *initialSettings)
 {
     struct termios new_settings;
     tcgetattr(STDIN_FILENO, initialSettings);
@@ -22,7 +22,7 @@ void setKeyboardNonBlock(termios *initialSettings)
     tcsetattr(STDIN_FILENO, TCSANOW, &new_settings);
 }
 
-void restoreKeyboardBlocking(termios *initialSettings)
+static void restoreKeyboardBlocking(termios *initialSettings)
 {
 	tcsetattr(STDIN_FILENO, TCSANOW, initialSettings);
 }
