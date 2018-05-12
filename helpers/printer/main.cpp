@@ -15,16 +15,17 @@ int main() {
     const milliseconds sleepTime{100};
     const int total = 76;
 
-    printer.drawPausedProgressBar(80, 20, total);
+    printer.drawPausedProgressBar(80, .25, 20, total);
 
-    printer.drawCancelledProgressBar(80, 20, total);
+    printer.drawCancelledProgressBar(80, .5, 20, total);
 
     cout << endl;
 
     for (int i = 1; i <= total; ++i) {
         if (i != 1) printer.eraseOutput(1);
 
-        printer.drawProgressBar(80, i, total);
+        double fraction = static_cast<double>(i) / total;
+        printer.drawProgressBar(80, fraction, i, total);
         printer.drawNotice(" [p - pause, c - cancel]> ");
 
         if (i < total) {

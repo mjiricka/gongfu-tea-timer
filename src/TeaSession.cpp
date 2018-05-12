@@ -5,6 +5,7 @@
 #include <chrono>
 #include <string>
 #include "Printer.h"
+#include "TonePlayer.h"
 
 
 using std::cout;
@@ -20,6 +21,21 @@ using std::invalid_argument;
 using std::stoi;
 
 
+class App {
+public:
+    App() : printer(true) {
+        tonePlayer.init();
+    }
+
+    ~App() {
+        tonePlayer.destroy();
+    }
+
+    Printer printer;
+    TonePlayer tonePlayer;
+};
+
+
 int parseInt(const string &i) {
     try {
         return stoi(i);
@@ -28,15 +44,22 @@ int parseInt(const string &i) {
     }
 }
 
+void playEndTune(App &app) {
+    app.tonePlayer.play(380, .5);
+    app.tonePlayer.play(420, .5);
+    app.tonePlayer.play(500, 1);
+}
+
 const milliseconds sleepTime{200};
 
-void session(Printer &printer, int i) {
+void session(App &app, int i) {
     const system_clock::time_point start = system_clock::now();
     const seconds waitTime{i};
     milliseconds passedTime;
+    const int totalMilliseconds = i * 1000;
 
-    printer.drawProgressBar(80, 0, i);
-    printer.drawNotice(" [p - pause, c - cancel]> ");
+    app.printer.drawProgressBar(80, 0, 0, i);
+    app.printer.drawNotice(" [p - pause, c - cancel]> ");
     do {
         sleep_for(sleepTime);
         system_clock::time_point end = system_clock::now();
@@ -44,26 +67,27 @@ void session(Printer &printer, int i) {
         passedTime = duration_cast<milliseconds>(end - start);
         seconds passedTimeSeconds = duration_cast<seconds>(passedTime);
 
-        printer.eraseOutput(1);
+        app.printer.eraseOutput(1);
 
-        printer.drawProgressBar(80, passedTimeSeconds.count(), i);
-        printer.drawNotice(" [p - pause, c - cancel]> ");
+        double fraction = static_cast<double>(passedTime.count()) / totalMilliseconds;
+        app.printer.drawProgressBar(80, fraction, passedTimeSeconds.count(), i);
+
+        app.printer.drawNotice(" [p - pause, c - cancel]> ");
     } while (passedTime <= waitTime);
 
-    printer.clearLine();
-    //printer.drawProgressBar(80, i, total);
-    //printer.drawNotice(" [p - pause, c - cancel]> ");
+    app.printer.clearLine();
 
+    playEndTune(app);
 }
 
 void TeaSession::run() {
-    Printer printer(true);
+    App app;
 
     string input;
     bool run = true;
 
     while (run) {
-        printer.drawPrompt("> ");
+        app.printer.drawPrompt("> ");
         cin >> input;
 
         if (input == "q") {
@@ -74,7 +98,7 @@ void TeaSession::run() {
             if (i <= 0) {
                 run = false;
             } else {
-                session(printer, i);
+                session(app, i);
             }
         }
     }

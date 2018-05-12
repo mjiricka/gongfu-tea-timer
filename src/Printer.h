@@ -16,9 +16,9 @@ public:
     void eraseOutput(int numLines);
     void clearLine();
 
-    void drawProgressBar(int width, int secondsPassed, int secondsTotal);
-    void drawPausedProgressBar(int width, int secondsPassed, int secondsTotal);
-    void drawCancelledProgressBar(int width, int secondsPassed, int secondsTotal);
+    void drawProgressBar(int width, double fraction, int secondsPassed, int secondsTotal);
+    void drawPausedProgressBar(int width, double fraction, int secondsPassed, int secondsTotal);
+    void drawCancelledProgressBar(int width, double fraction, int secondsPassed, int secondsTotal);
 
     void drawNotice(const string &notice);
     void drawPrompt(const string &prompt);

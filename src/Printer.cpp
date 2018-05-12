@@ -11,6 +11,7 @@ using std::cout;
 using std::cin;
 using std::endl;
 using std::string;
+using std::min;
 
 
 // TODO
@@ -54,7 +55,7 @@ static void printProgressBar(size_t length, size_t done, const ProgressBarColour
     cout << colours.brace << "]" << colReset;
 }
 
-static void doDrawProgressBar(int width, int secondsPassed, int secondsTotal, ProgressBarColours &colours, const string &label = "") {
+static void doDrawProgressBar(int width, double fraction, int secondsPassed, int secondsTotal, ProgressBarColours &colours, const string &label = "") {
     assert(secondsPassed <= secondsTotal);
     assert(0 <= secondsPassed);
     assert(0 < secondsTotal);
@@ -63,7 +64,7 @@ static void doDrawProgressBar(int width, int secondsPassed, int secondsTotal, Pr
     string total = Utils::padRight(Utils::seconds2string(secondsTotal), MAX_TIME_LENGTH);
 
     cout << passed << "/" << total << " ";
-    int done = ceil(width * (static_cast<float>(secondsPassed) / secondsTotal));
+    int done = ceil(width * fraction);
     printProgressBar(width, done, colours, label);
     cout << endl;
 }
@@ -85,16 +86,30 @@ void Printer::clearLine() {
     cout.flush();
 }
 
-void Printer::drawProgressBar(int width, int secondsPassed, int secondsTotal) {
-    doDrawProgressBar(width, secondsPassed, secondsTotal, noLabelColours);
+void Printer::drawProgressBar(int width, double fraction, int secondsPassed, int secondsTotal) {
+    doDrawProgressBar(
+        width,
+        min(fraction, 1.0),
+        min(secondsPassed, secondsTotal),
+        secondsTotal, noLabelColours);
 }
 
-void Printer::drawPausedProgressBar(int width, int secondsPassed, int secondsTotal) {
-    doDrawProgressBar(width, secondsPassed, secondsTotal, withLabelColours, "PAUSED");
+void Printer::drawPausedProgressBar(int width, double fraction, int secondsPassed, int secondsTotal) {
+    doDrawProgressBar(
+        width,
+        min(fraction, 1.0),
+        min(secondsPassed, secondsTotal),
+        secondsTotal, noLabelColours,
+        "PAUSED");
 }
 
-void Printer::drawCancelledProgressBar(int width, int secondsPassed, int secondsTotal) {
-    doDrawProgressBar(width, secondsPassed, secondsTotal, withLabelColours, "CANCELLED");
+void Printer::drawCancelledProgressBar(int width, double fraction, int secondsPassed, int secondsTotal) {
+    doDrawProgressBar(
+        width,
+        min(fraction, 1.0),
+        min(secondsPassed, secondsTotal),
+        secondsTotal, noLabelColours,
+        "CANCELLED");
 }
 
 void Printer::drawNotice(const string &notice) {
