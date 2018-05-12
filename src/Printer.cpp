@@ -80,6 +80,11 @@ void Printer::eraseOutput(int numLines) {
     cout.flush();
 }
 
+void Printer::clearLine() {
+    cout << "\r\033[K";
+    cout.flush();
+}
+
 void Printer::drawProgressBar(int width, int secondsPassed, int secondsTotal) {
     doDrawProgressBar(width, secondsPassed, secondsTotal, noLabelColours);
 }
@@ -94,6 +99,11 @@ void Printer::drawCancelledProgressBar(int width, int secondsPassed, int seconds
 
 void Printer::drawNotice(const string &notice) {
     cout << col3 << notice << colReset;
+    cout.flush();
+}
+
+void Printer::drawPrompt(const string &prompt) {
+    cout << col1 << prompt << colReset;
     cout.flush();
 }
 
