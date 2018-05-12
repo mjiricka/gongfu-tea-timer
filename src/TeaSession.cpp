@@ -6,6 +6,7 @@
 #include <string>
 #include "Printer.h"
 #include "TonePlayer.h"
+#include "ConsoleReader.h"
 
 
 using std::cout;
@@ -33,6 +34,7 @@ public:
 
     Printer printer;
     TonePlayer tonePlayer;
+    ConsoleReader consoleReader;
 };
 
 
@@ -57,8 +59,11 @@ void session(App &app, int i) {
     const seconds waitTime{i};
     milliseconds passedTime;
     const int totalMilliseconds = i * 1000;
+    bool noAbort = true;
 
-    app.printer.drawProgressBar(80, 0, 0, i);
+    app.consoleReader.startSession();
+
+    app.printer.drawProgressBar(80, 0.0, 0, i);
     app.printer.drawNotice(" [p - pause, c - cancel]> ");
     do {
         sleep_for(sleepTime);
@@ -71,13 +76,27 @@ void session(App &app, int i) {
 
         double fraction = static_cast<double>(passedTime.count()) / totalMilliseconds;
         app.printer.drawProgressBar(80, fraction, passedTimeSeconds.count(), i);
+        app.printer.drawNotice(" [Press 'a' to abort]> ");
 
-        app.printer.drawNotice(" [p - pause, c - cancel]> ");
-    } while (passedTime <= waitTime);
+        if (app.consoleReader.isInput()) {
+            char userInput = app.consoleReader.getInput();
+            switch (userInput) {
+                case 'a':
+                    app.printer.eraseOutput(1);
+                    app.printer.drawCancelledProgressBar(80, fraction, passedTimeSeconds.count(), i);
+                    noAbort = false;
+                    break;
+            }
+        }
+    } while ((passedTime <= waitTime) && noAbort);
+
+    if (noAbort) {
+        playEndTune(app);
+    }
 
     app.printer.clearLine();
 
-    playEndTune(app);
+    app.consoleReader.stopSession();
 }
 
 void TeaSession::run() {
