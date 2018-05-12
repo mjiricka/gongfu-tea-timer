@@ -1,6 +1,9 @@
 #ifndef PRINTER_H
 #define PRINTER_H
 
+#include <string>
+
+using std::string;
 
 
 /**
@@ -10,8 +13,13 @@ class Printer {
 public:
     Printer(bool useColours);
 
+    void eraseOutput(int numLines);
+
     void drawProgressBar(int width, int secondsPassed, int secondsTotal);
-    void redrawProgressBar(int width, int secondsPassed, int secondsTotal);
+    void drawPausedProgressBar(int width, int secondsPassed, int secondsTotal);
+    void drawCancelledProgressBar(int width, int secondsPassed, int secondsTotal);
+
+    void drawNotice(const string &notice);
 };
 
 

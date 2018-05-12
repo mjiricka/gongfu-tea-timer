@@ -16,31 +16,45 @@ using std::string;
 // TODO
 string col1 = "\033[1;33m";  // yellow
 string col2 = "\033[0;32m";  // green
-string col3 = "\033[0;30m";  // lightgray
+string col3 = "\033[1;30m";  // lightgray
 string colReset = "\033[0m";
 
-static const int NUM_LINES = 1;
 static const int MAX_TIME_LENGTH = 6;
 
 
-static void eraseOutput(int numLines) {
-    cout << "\033[" << numLines << "A";
-}
+struct ProgressBarColours {
+    string brace;
+    string text;
+    string fill;
+};
 
-static void printProgressbar(int length, int done) {
-    cout << col1 << "[" << col2;
-    for (int i = 0; i < length; ++i) {
-        cout << ((i < done) ? "\u25A0" : " ");
+static ProgressBarColours noLabelColours{col1, "", col2};
+static ProgressBarColours withLabelColours{col1, col2, col3};
+
+
+
+static void printProgressBar(size_t length, size_t done, const ProgressBarColours &colours, const string &label) {
+    assert(label.size() < length);
+
+    cout << colours.brace << "[" << colours.fill;
+
+    size_t labelSize = label.size();
+    size_t whenLabelStarts = labelSize > 0 ? (length - labelSize) / 2 : length;
+    size_t i = 0;
+
+    while (i < length) {
+        if (i == whenLabelStarts) {
+            cout << colours.text << label << colours.fill;
+            i += labelSize;
+        } else {
+            cout << ((i < done) ? "\u25A0" : " ");
+            ++i;
+        }
     }
-    cout << col1 << "]" << colReset;
+    cout << colours.brace << "]" << colReset;
 }
 
-
-Printer::Printer(bool useColours) {
-    // TODO
-}
-
-void Printer::drawProgressBar(int width, int secondsPassed, int secondsTotal) {
+static void doDrawProgressBar(int width, int secondsPassed, int secondsTotal, ProgressBarColours &colours, const string &label = "") {
     assert(secondsPassed <= secondsTotal);
     assert(0 <= secondsPassed);
     assert(0 < secondsTotal);
@@ -50,12 +64,36 @@ void Printer::drawProgressBar(int width, int secondsPassed, int secondsTotal) {
 
     cout << passed << "/" << total << " ";
     int done = ceil(width * (static_cast<float>(secondsPassed) / secondsTotal));
-    printProgressbar(width, done);
+    printProgressBar(width, done, colours, label);
     cout << endl;
 }
 
-void Printer::redrawProgressBar(int width, int secondsPassed, int secondsTotal) {
-    eraseOutput(NUM_LINES);
-    drawProgressBar(width, secondsPassed, secondsTotal);
+
+Printer::Printer(bool useColours) {
+    // TODO
+}
+
+void Printer::eraseOutput(int numLines) {
+    for (int i = 0; i < numLines; ++i) {
+        cout << "\r\033[K\033[1A";
+    }
+    cout.flush();
+}
+
+void Printer::drawProgressBar(int width, int secondsPassed, int secondsTotal) {
+    doDrawProgressBar(width, secondsPassed, secondsTotal, noLabelColours);
+}
+
+void Printer::drawPausedProgressBar(int width, int secondsPassed, int secondsTotal) {
+    doDrawProgressBar(width, secondsPassed, secondsTotal, withLabelColours, "PAUSED");
+}
+
+void Printer::drawCancelledProgressBar(int width, int secondsPassed, int secondsTotal) {
+    doDrawProgressBar(width, secondsPassed, secondsTotal, withLabelColours, "CANCELLED");
+}
+
+void Printer::drawNotice(const string &notice) {
+    cout << col3 << notice << colReset;
+    cout.flush();
 }
 

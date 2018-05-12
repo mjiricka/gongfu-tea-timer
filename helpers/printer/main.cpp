@@ -15,14 +15,25 @@ int main() {
     const milliseconds sleepTime{100};
     const int total = 76;
 
+    printer.drawPausedProgressBar(80, 20, total);
+
+    printer.drawCancelledProgressBar(80, 20, total);
+
+    cout << endl;
+
     for (int i = 1; i <= total; ++i) {
-        if (i == 1) {
-            printer.drawProgressBar(80, i, total);
-        } else {
-            printer.redrawProgressBar(80, i, total);
+        if (i != 1) printer.eraseOutput(1);
+
+        printer.drawProgressBar(80, i, total);
+        printer.drawNotice(" [p - pause, c - cancel]> ");
+
+        if (i < total) {
             sleep_for(sleepTime);
         }
     }
+
+    cout << endl;
+    printer.eraseOutput(1);
 
     return 0;
 }
