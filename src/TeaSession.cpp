@@ -7,6 +7,7 @@
 #include "Printer.h"
 #include "TonePlayer.h"
 #include "ConsoleReader.h"
+#include "SessionData.h"
 
 
 using std::cout;
@@ -35,6 +36,7 @@ public:
     Printer printer;
     TonePlayer tonePlayer;
     ConsoleReader consoleReader;
+    SessionData sessionData;
 };
 
 
@@ -54,17 +56,17 @@ void playEndTune(App &app) {
 
 const milliseconds sleepTime{200};
 
-void session(App &app, int i) {
+void session(App &app, int durationInSeconds) {
     const system_clock::time_point start = system_clock::now();
-    const seconds waitTime{i};
+    const seconds waitTime{durationInSeconds};
     milliseconds passedTime;
-    const int totalMilliseconds = i * 1000;
+    const int totalMilliseconds = durationInSeconds * 1000;
     bool noAbort = true;
 
     app.consoleReader.startSession();
 
-    app.printer.drawProgressBar(80, 0.0, 0, i);
-    app.printer.drawNotice(" [p - pause, c - cancel]> ");
+    app.printer.drawProgressBar(80, 0.0, 0, durationInSeconds);
+    app.printer.drawNotice(" [Press 'a' to abort]> ");
     do {
         sleep_for(sleepTime);
         system_clock::time_point end = system_clock::now();
@@ -75,7 +77,7 @@ void session(App &app, int i) {
         app.printer.eraseOutput(1);
 
         double fraction = static_cast<double>(passedTime.count()) / totalMilliseconds;
-        app.printer.drawProgressBar(80, fraction, passedTimeSeconds.count(), i);
+        app.printer.drawProgressBar(80, fraction, passedTimeSeconds.count(), durationInSeconds);
         app.printer.drawNotice(" [Press 'a' to abort]> ");
 
         if (app.consoleReader.isInput()) {
@@ -83,7 +85,7 @@ void session(App &app, int i) {
             switch (userInput) {
                 case 'a':
                     app.printer.eraseOutput(1);
-                    app.printer.drawCancelledProgressBar(80, fraction, passedTimeSeconds.count(), i);
+                    app.printer.drawCancelledProgressBar(80, fraction, passedTimeSeconds.count(), durationInSeconds);
                     noAbort = false;
                     break;
             }
@@ -92,6 +94,7 @@ void session(App &app, int i) {
 
     if (noAbort) {
         playEndTune(app);
+        app.sessionData.addSession(durationInSeconds);
     }
 
     app.printer.clearLine();
@@ -106,6 +109,11 @@ void TeaSession::run() {
     bool run = true;
 
     while (run) {
+        if (app.sessionData.getSessionNum() > 0) {
+            cout << endl;
+            app.printer.printSession(app.sessionData);
+        }
+
         app.printer.drawPrompt("> ");
         cin >> input;
 

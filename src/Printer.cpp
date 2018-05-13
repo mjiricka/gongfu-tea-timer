@@ -5,6 +5,7 @@
 #include <cmath>
 #include <cassert>
 #include "Utils.h"
+#include "SessionData.h"
 
 
 using std::cout;
@@ -99,7 +100,7 @@ void Printer::drawPausedProgressBar(int width, double fraction, int secondsPasse
         width,
         min(fraction, 1.0),
         min(secondsPassed, secondsTotal),
-        secondsTotal, noLabelColours,
+        secondsTotal, withLabelColours,
         "PAUSED");
 }
 
@@ -108,8 +109,8 @@ void Printer::drawCancelledProgressBar(int width, double fraction, int secondsPa
         width,
         min(fraction, 1.0),
         min(secondsPassed, secondsTotal),
-        secondsTotal, noLabelColours,
-        "CANCELLED");
+        secondsTotal, withLabelColours,
+        "Aborted");
 }
 
 void Printer::drawNotice(const string &notice) {
@@ -120,5 +121,16 @@ void Printer::drawNotice(const string &notice) {
 void Printer::drawPrompt(const string &prompt) {
     cout << col1 << prompt << colReset;
     cout.flush();
+}
+
+void Printer::printSession(SessionData &sessionData) {
+    cout << col1 << "Steeps: " << colReset << sessionData.getSessionNum() << endl;
+
+    cout << col1 << "Timing: " << colReset;
+    auto timing = sessionData.getTiming();
+    for (auto it = timing.begin(); it != timing.end(); it++) {
+        cout << *it << " ";
+    }
+    cout << endl;
 }
 

@@ -2,6 +2,8 @@
 #define PRINTER_H
 
 #include <string>
+#include "SessionData.h"
+
 
 using std::string;
 
@@ -22,6 +24,8 @@ public:
 
     void drawNotice(const string &notice);
     void drawPrompt(const string &prompt);
+
+    void printSession(SessionData &sessionData);
 };
 
 
