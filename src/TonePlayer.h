@@ -17,9 +17,9 @@ public:
 private:
     bool _isInited = false;
     int default_driver;
-	ao_sample_format format;
-	ao_device *device;
-	char *buffer;
+    ao_sample_format format;
+    ao_device *device;
+    char *buffer;
 };
 
 

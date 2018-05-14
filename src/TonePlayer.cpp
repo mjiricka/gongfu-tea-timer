@@ -24,30 +24,30 @@ void TonePlayer::init() {
     assert(_isInited == false);
     _isInited = true;
 
-	ao_initialize();
+    ao_initialize();
 
-	default_driver = ao_default_driver_id();
+    default_driver = ao_default_driver_id();
 
     format = ao_sample_format();
-	format.bits = bits;
-	format.channels = channels;
-	format.rate = rate;
-	format.byte_format = AO_FMT_LITTLE;
+    format.bits = bits;
+    format.channels = channels;
+    format.rate = rate;
+    format.byte_format = AO_FMT_LITTLE;
 
-	device = ao_open_live(default_driver, &format, NULL /* no options */);
-	if (device == NULL) {
+    device = ao_open_live(default_driver, &format, NULL /* no options */);
+    if (device == NULL) {
         throw runtime_error("Error opening device.");
-	}
+    }
 
-	buffer = new char[totalBufferSize];
+    buffer = new char[totalBufferSize];
 }
 
 void TonePlayer::destroy() {
     assert(_isInited == true);
     _isInited = false;
 
-	ao_close(device);
-	ao_shutdown();
+    ao_close(device);
+    ao_shutdown();
     delete[] buffer;
 }
 
@@ -56,7 +56,7 @@ void TonePlayer::play(float freq, float fractionOfSecond) {
     assert(0 < fractionOfSecond && fractionOfSecond <= 1.0);
 
     int numSamples = format.rate * fractionOfSecond;
-	int bufSize = sampleBits * numSamples;
+    int bufSize = sampleBits * numSamples;
 
     for (int i = 0; i < numSamples; i++) {
         int sample = (int)(max * sin(2 * M_PI * freq * ((float) i/format.rate)));

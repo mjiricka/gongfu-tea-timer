@@ -24,7 +24,7 @@ static void setKeyboardNonBlock(termios *initialSettings)
 
 static void restoreKeyboardBlocking(termios *initialSettings)
 {
-	tcsetattr(STDIN_FILENO, TCSANOW, initialSettings);
+    tcsetattr(STDIN_FILENO, TCSANOW, initialSettings);
 }
 
 void ConsoleReader::startSession() {
