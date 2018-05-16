@@ -8,6 +8,7 @@
 #include "TonePlayer.h"
 #include "ConsoleReader.h"
 #include "SessionData.h"
+#include "Settings.h"
 
 
 using std::cout;
@@ -56,7 +57,7 @@ void playEndTune(App &app) {
 
 const milliseconds sleepTime{200};
 
-void session(App &app, int durationInSeconds) {
+void session(App &app, Settings &settings, int durationInSeconds) {
     const system_clock::time_point start = system_clock::now();
     const seconds waitTime{durationInSeconds};
     milliseconds passedTime;
@@ -93,7 +94,9 @@ void session(App &app, int durationInSeconds) {
     } while ((passedTime <= waitTime) && noAbort);
 
     if (noAbort) {
-        playEndTune(app);
+        if (settings.playSound) {
+            playEndTune(app);
+        }
         app.sessionData.addSession(durationInSeconds);
     }
 
@@ -101,6 +104,12 @@ void session(App &app, int durationInSeconds) {
 
     app.consoleReader.stopSession();
 }
+
+
+TeaSession::TeaSession(Settings &settings) {
+    this->settings = settings;
+}
+
 
 void TeaSession::run() {
     App app;
@@ -125,7 +134,7 @@ void TeaSession::run() {
             if (i <= 0) {
                 run = false;
             } else {
-                session(app, i);
+                session(app, settings, i);
             }
         }
     }

@@ -1,6 +1,7 @@
 #ifndef TEA_SESSION_H
 #define TEA_SESSION_H
 
+#include "Settings.h"
 
 
 /**
@@ -8,7 +9,10 @@
  */
 class TeaSession {
 public:
+    TeaSession(Settings &settings);
     void run();
+private:
+    Settings settings;
 };
 
 
