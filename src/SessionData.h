@@ -2,10 +2,12 @@
 #define SESSIONDATA_H
 
 #include <vector>
+#include <chrono>
 
 
 using std::vector;
-
+using std::chrono::system_clock;
+using std::chrono::seconds;
 
 
 /**
@@ -13,16 +15,20 @@ using std::vector;
  */
 class SessionData {
 public:
-    void addSession(int duration);
+    void addSession(int duration, system_clock::time_point startTime);
     size_t getSessionNum();
     vector<int> getTiming();
+    vector<seconds> getTimeDistances();
+    seconds getSessionLength();
 
 private:
     struct SessionEntry {
         int duration;
+        system_clock::time_point startTime;
     };
 
     vector<SessionEntry> data;
+    system_clock::time_point sessionStart;
 };
 
 

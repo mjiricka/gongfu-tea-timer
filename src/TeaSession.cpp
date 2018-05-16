@@ -97,7 +97,7 @@ void session(App &app, Settings &settings, int durationInSeconds) {
         if (settings.playSound) {
             playEndTune(app);
         }
-        app.sessionData.addSession(durationInSeconds);
+        app.sessionData.addSession(durationInSeconds, start);
     }
 
     app.printer.clearLine();

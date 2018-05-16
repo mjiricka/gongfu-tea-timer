@@ -124,13 +124,25 @@ void Printer::drawPrompt(const string &prompt) {
 }
 
 void Printer::printSession(SessionData &sessionData) {
-    cout << col1 << "Steeps: " << colReset << sessionData.getSessionNum() << endl;
+    cout << col1 << "Session duration: " << colReset
+        << Utils::seconds2string(sessionData.getSessionLength().count()) << endl;
 
-    cout << col1 << "Timing: " << colReset;
+    cout << col1 << "Steeps:           " << colReset << sessionData.getSessionNum() << endl;
+
+    cout << col1 << "Timing:           " << colReset;
     auto timing = sessionData.getTiming();
     for (auto it = timing.begin(); it != timing.end(); it++) {
         cout << *it << " ";
     }
     cout << endl;
+
+    if (sessionData.getSessionNum() > 1) {
+        cout << col1 << "Time delays:      " << colReset;
+        auto timeDistances = sessionData.getTimeDistances();
+        for (auto it = timeDistances.begin(); it != timeDistances.end(); it++) {
+            cout << Utils::seconds2string(it->count()) << " ";
+        }
+        cout << endl;
+    }
 }
 
