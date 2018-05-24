@@ -44,7 +44,7 @@ public:
 int parseInt(const string &i) {
     try {
         return stoi(i);
-    } catch (invalid_argument) {
+    } catch (invalid_argument &) {
         return -1;
     }
 }

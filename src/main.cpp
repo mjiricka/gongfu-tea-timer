@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
     } else {
         Settings settings;
         loadSettings(settings, cmdl);
-        cout << "USAGE: " << settings.playSound << endl;
+        //cout << "USAGE: " << settings.playSound << endl;
         TeaSession ts(settings);
         ts.run();
     }
