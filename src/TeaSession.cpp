@@ -4,11 +4,14 @@
 #include <thread>
 #include <chrono>
 #include <string>
+#include <readline/readline.h>
+#include <readline/history.h>
 #include "Printer.h"
 #include "TonePlayer.h"
 #include "ConsoleReader.h"
 #include "SessionData.h"
 #include "Settings.h"
+#include "Utils.h"
 
 
 using std::cout;
@@ -117,18 +120,26 @@ void TeaSession::run() {
     string input;
     bool run = true;
 
+    // Disable readline tab completion.
+    // TODO: it does not work..:(
+    rl_bind_key('\t', rl_insert);
+
     while (run) {
         if (app.sessionData.getSessionNum() > 0) {
             cout << endl;
             app.printer.printSession(app.sessionData);
         }
 
-        app.printer.drawPrompt("> ");
-        cin >> input;
+        input = readline("> ");
+        Utils::trim(input);
 
         if (input == "q") {
             run = false;
+        } if (input == "") {
+            // Skip empty lines.
         } else {
+            add_history(input.c_str());
+
             int i = parseInt(input);
 
             if (i <= 0) {

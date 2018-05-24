@@ -4,7 +4,7 @@ CC := g++
 SRC_DIR := src
 BUILD_DIR := bin
 SRC_EXT := cpp
-LIBS := -lao
+LIBS := -lao -lreadline
 INCLUDES := -I modules/argh
 
 SOURCES := $(shell find $(SRC_DIR) -type f -name *.$(SRC_EXT))

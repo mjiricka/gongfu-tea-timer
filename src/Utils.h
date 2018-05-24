@@ -14,6 +14,10 @@ public:
     static string seconds2string(int seconds);
     static string padRight(std::string const &str, size_t s);
     static string padLeft(string const &str, size_t s);
+
+    static void ltrim(std::string &s);
+    static void rtrim(std::string &s);
+    static void trim(std::string &s);
 };
 
 #endif /* UTILS_H */
