@@ -22,7 +22,6 @@ static const int max = 0.75 * (1 << 15);  // Constant 0.75 is used in official l
 
 void TonePlayer::init() {
     assert(_isInited == false);
-    _isInited = true;
 
     ao_initialize();
 
@@ -40,6 +39,8 @@ void TonePlayer::init() {
     }
 
     buffer = new char[totalBufferSize];
+
+    _isInited = true;
 }
 
 void TonePlayer::destroy() {

@@ -4,6 +4,7 @@
 #include <thread>
 #include <chrono>
 #include <string>
+#include <stdexcept>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "Printer.h"
@@ -25,16 +26,23 @@ using std::chrono::system_clock;
 using std::chrono::duration_cast;
 using std::invalid_argument;
 using std::stoi;
+using std::runtime_error;
 
 
 class App {
 public:
     App() : printer(true) {
-        tonePlayer.init();
+        try {
+            tonePlayer.init();
+        } catch (runtime_error &) {
+            cout << "ERROR: Sound could not be initialized! ";
+            cout << "(Check your /etc/libao.conf)" << endl;
+            cout << "       Continuing without playing sound!" << endl;
+        }
     }
 
     ~App() {
-        tonePlayer.destroy();
+        if (tonePlayer.isInited()) tonePlayer.destroy();
     }
 
     Printer printer;
@@ -97,7 +105,7 @@ void session(App &app, Settings &settings, int durationInSeconds) {
     } while ((passedTime <= waitTime) && noAbort);
 
     if (noAbort) {
-        if (settings.playSound) {
+        if (settings.playSound && app.tonePlayer.isInited()) {
             playEndTune(app);
         }
         app.sessionData.addSession(durationInSeconds, start);
