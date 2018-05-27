@@ -6,6 +6,7 @@
 #include <cassert>
 #include "Utils.h"
 #include "SessionData.h"
+#include "TerminalUtils.h"
 
 
 using std::cout;
@@ -22,6 +23,7 @@ string col3 = "\033[1;30m";  // lightgray
 string colReset = "\033[0m";
 
 static const int MAX_TIME_LENGTH = 6;
+static const int TERMINAL_WIDTH_MAGIC = 10;
 
 
 struct ProgressBarColours {
@@ -64,9 +66,13 @@ static void doDrawProgressBar(int width, double fraction, int secondsPassed, int
     string passed = Utils::padLeft(Utils::seconds2string(secondsPassed), MAX_TIME_LENGTH);
     string total = Utils::padRight(Utils::seconds2string(secondsTotal), MAX_TIME_LENGTH);
 
+    int possibleTerminalWidth = (int) (
+        TerminalUtils::getTerminalWidth() - MAX_TIME_LENGTH - TERMINAL_WIDTH_MAGIC);
+    int finalWidth = min(width, possibleTerminalWidth);
+
     cout << passed << "/" << total << " ";
-    int done = ceil(width * fraction);
-    printProgressBar(width, done, colours, label);
+    int done = ceil(finalWidth * fraction);
+    printProgressBar(finalWidth, done, colours, label);
     cout << endl;
 }
 

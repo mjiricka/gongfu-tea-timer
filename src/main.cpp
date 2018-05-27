@@ -3,6 +3,7 @@
 #include <argh.h>
 #include "Settings.h"
 #include "TeaSession.h"
+#include "TerminalUtils.h"
 
 
 using std::cout;
@@ -31,11 +32,16 @@ int main(int argc, char *argv[]) {
         // TODO
         cout << "USAGE: " << argv[0] << endl;
     } else {
-        Settings settings;
-        loadSettings(settings, cmdl);
-        //cout << "USAGE: " << settings.playSound << endl;
-        TeaSession ts(settings);
-        ts.run();
+        if (TerminalUtils::isAppRunInInteractiveTerminal()) {
+            Settings settings;
+            loadSettings(settings, cmdl);
+            //cout << "USAGE: " << settings.playSound << endl;
+            TeaSession ts(settings);
+            ts.run();
+        } else {
+            cout << "ERROR: This app is interactive ";
+            cout << "and needs to run in interactive terminal." << endl;
+        }
     }
 
     return EXIT_SUCCESS;
