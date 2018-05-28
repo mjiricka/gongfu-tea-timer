@@ -131,7 +131,8 @@ void Printer::drawPrompt(const string &prompt) {
 
 void Printer::printSession(SessionData &sessionData) {
     cout << col1 << "Session duration: " << colReset
-        << Utils::seconds2string(sessionData.getSessionLength().count()) << endl;
+        << Utils::seconds2string(sessionData.getSessionLength().count())
+        << " (started at " << Utils::getTime(sessionData.getSessionStart()) << ")" << endl;
 
     cout << col1 << "Steeps:           " << colReset << sessionData.getSessionNum() << endl;
 

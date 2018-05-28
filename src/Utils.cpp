@@ -3,10 +3,14 @@
 #include <algorithm>
 #include <functional>
 #include <string>
+#include <chrono>
+#include <ctime>
 
 using std::string;
+using std::time_t;
 using std::remove;
 using std::to_string;
+using std::chrono::system_clock;
 
 
 string Utils::seconds2string(int seconds) {
@@ -53,5 +57,18 @@ void Utils::rtrim(std::string &s) {
 void Utils::trim(std::string &s) {
     ltrim(s);
     rtrim(s);
+}
+
+string Utils::getTime(system_clock::time_point tp) {
+    std::time_t t = system_clock::to_time_t(tp);
+    tm *timeinfo;
+    char buffer[80];
+
+    time(&t);
+    timeinfo = localtime(&t);
+
+    strftime(buffer, 80, "%R", timeinfo);
+
+    return string(buffer);
 }
 

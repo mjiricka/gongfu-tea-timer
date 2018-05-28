@@ -2,8 +2,10 @@
 #define UTILS_H
 
 #include <string>
+#include <chrono>
 
 using std::string;
+using std::chrono::system_clock;
 
 
 /**
@@ -18,6 +20,8 @@ public:
     static void ltrim(std::string &s);
     static void rtrim(std::string &s);
     static void trim(std::string &s);
+
+    static string getTime(system_clock::time_point tp);
 };
 
 #endif /* UTILS_H */

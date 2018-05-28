@@ -20,6 +20,7 @@ public:
     vector<int> getTiming();
     vector<seconds> getTimeDistances();
     seconds getSessionLength();
+    system_clock::time_point getSessionStart();
 
 private:
     struct SessionEntry {

@@ -52,3 +52,7 @@ seconds SessionData::getSessionLength() {
     return duration_cast<seconds>(system_clock::now() - sessionStart);
 }
 
+system_clock::time_point SessionData::getSessionStart() {
+    return sessionStart;
+}
+
