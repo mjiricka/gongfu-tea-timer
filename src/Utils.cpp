@@ -61,11 +61,8 @@ void Utils::trim(std::string &s) {
 
 string Utils::getTime(system_clock::time_point tp) {
     std::time_t t = system_clock::to_time_t(tp);
-    tm *timeinfo;
+    tm *timeinfo = localtime(&t);
     char buffer[80];
-
-    time(&t);
-    timeinfo = localtime(&t);
 
     strftime(buffer, 80, "%R", timeinfo);
 
