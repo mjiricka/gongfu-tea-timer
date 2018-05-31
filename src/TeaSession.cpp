@@ -133,18 +133,16 @@ void TeaSession::run() {
     rl_bind_key('\t', rl_insert);
 
     while (run) {
-        if (app.sessionData.getSessionNum() > 0) {
-            cout << endl;
-            app.printer.printSession(app.sessionData);
-        }
-
         input = readline("> ");
         Utils::trim(input);
 
-        if (input == "q") {
+        if (input == "quit" || input == "q") {
             run = false;
-        } if (input == "") {
+        } else if (input == "") {
             // Skip empty lines.
+        } else if (input == "info" || input == "i") {
+            app.printer.printSession(app.sessionData);
+            cout << endl;
         } else {
             add_history(input.c_str());
 
@@ -154,6 +152,9 @@ void TeaSession::run() {
                 run = false;
             } else {
                 session(app, settings, i);
+                cout << endl;
+                app.printer.printSession(app.sessionData);
+                cout << endl;
             }
         }
     }
