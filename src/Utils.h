@@ -13,7 +13,7 @@ using std::chrono::system_clock;
  */
 class Utils {
 public:
-    static string seconds2string(int seconds);
+    static string seconds2string(int seconds, bool longFormat);
     static string padRight(std::string const &str, size_t s);
     static string padLeft(string const &str, size_t s);
 

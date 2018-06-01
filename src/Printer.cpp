@@ -63,8 +63,8 @@ static void doDrawProgressBar(int width, double fraction, int secondsPassed, int
     assert(0 <= secondsPassed);
     assert(0 < secondsTotal);
 
-    string passed = Utils::padLeft(Utils::seconds2string(secondsPassed), MAX_TIME_LENGTH);
-    string total = Utils::padRight(Utils::seconds2string(secondsTotal), MAX_TIME_LENGTH);
+    string passed = Utils::padLeft(Utils::seconds2string(secondsPassed, false), MAX_TIME_LENGTH);
+    string total = Utils::padRight(Utils::seconds2string(secondsTotal, false), MAX_TIME_LENGTH);
 
     int possibleTerminalWidth = (int) (
         TerminalUtils::getTerminalWidth() - MAX_TIME_LENGTH - TERMINAL_WIDTH_MAGIC);
@@ -132,7 +132,7 @@ void Printer::drawPrompt(const string &prompt) {
 void Printer::printSession(SessionData &sessionData) {
     if (sessionData.getSessionNum()) {
         cout << col1 << "Session duration: " << colReset
-            << Utils::seconds2string(sessionData.getSessionLength().count())
+            << Utils::seconds2string(sessionData.getSessionLength().count(), true)
             << " (started at " << Utils::getTime(sessionData.getSessionStart()) << ")" << endl;
 
         cout << col1 << "Steeps:           " << colReset << sessionData.getSessionNum() << endl;
@@ -148,7 +148,7 @@ void Printer::printSession(SessionData &sessionData) {
             cout << col1 << "Time delays:      " << colReset;
             auto timeDistances = sessionData.getTimeDistances();
             for (auto it = timeDistances.begin(); it != timeDistances.end(); it++) {
-                cout << Utils::seconds2string(it->count()) << " ";
+                cout << Utils::seconds2string(it->count(), false) << " ";
             }
             cout << endl;
         }

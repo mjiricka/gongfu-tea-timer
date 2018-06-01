@@ -13,18 +13,24 @@ using std::to_string;
 using std::chrono::system_clock;
 
 
-string Utils::seconds2string(int seconds) {
-    if (seconds >= 60) {
-        string minutes = to_string(seconds / 60) + "m";
-
-        int secs = seconds % 60;
-        if (secs == 0) {
-            return minutes;
-        } else {
-            return minutes + to_string(secs) + "s";
-        }
+string Utils::seconds2string(int numSeconds, bool longFormat) {
+    if (numSeconds == 0) {
+        return "0s";
     } else {
-        return std::to_string(seconds) + "s";
+        int hours = numSeconds / 3600;
+        int minutes = (numSeconds % 3600) / 60;
+        int seconds = numSeconds % 60;
+
+        string hoursStr = hours == 0 ? "" : to_string(hours) + "h";
+        string minutesStr = (minutes == 0) && (hours == 0) ? "" : to_string(minutes) + "m";
+        string secondsStr = seconds == 0 ? "" : to_string(seconds) + "s";
+
+        string sep = longFormat ? " " : "";
+        string result = hoursStr + sep + minutesStr + sep + secondsStr;
+
+        Utils::trim(result);
+
+        return result;
     }
 }
 
