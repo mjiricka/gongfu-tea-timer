@@ -13,6 +13,7 @@
 #include "SessionData.h"
 #include "Settings.h"
 #include "Utils.h"
+#include "Notifier.h"
 
 
 using std::cout;
@@ -49,6 +50,7 @@ public:
     TonePlayer tonePlayer;
     ConsoleReader consoleReader;
     SessionData sessionData;
+    Notifier notifier;
 };
 
 
@@ -105,6 +107,7 @@ void session(App &app, Settings &settings, int durationInSeconds) {
     } while ((passedTime <= waitTime) && noAbort);
 
     if (noAbort) {
+        app.notifier.notify();
         if (settings.playSound && app.tonePlayer.isInited()) {
             playEndTune(app);
         }

@@ -4,8 +4,8 @@ CC := g++
 SRC_DIR := src
 BUILD_DIR := bin
 SRC_EXT := cpp
-LIBS := -lao -lreadline
-INCLUDES := -I modules/argh
+LIBS := -lao -lreadline $(shell pkg-config --libs gio-2.0)
+INCLUDES := -I modules/argh $(shell pkg-config --cflags gio-2.0)
 
 SOURCES := $(shell find $(SRC_DIR) -type f -name *.$(SRC_EXT))
 OBJECTS := $(patsubst $(SRC_DIR)/%.$(SRC_EXT),$(BUILD_DIR)/%.o,$(SOURCES))
