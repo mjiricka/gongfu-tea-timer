@@ -136,28 +136,35 @@ void TeaSession::run() {
     rl_bind_key('\t', rl_insert);
 
     while (run) {
-        input = readline("> ");
+        input = readline("gongfu> ");
         Utils::trim(input);
 
         if (input == "quit" || input == "q") {
             run = false;
         } else if (input == "") {
             // Skip empty lines.
-        } else if (input == "info" || input == "i") {
-            app.printer.printSession(app.sessionData);
-            cout << endl;
         } else {
+            // Regular command.
+
             add_history(input.c_str());
 
-            int i = parseInt(input);
+            if (input == "info" || input == "i") {
 
-            if (i <= 0) {
-                run = false;
-            } else {
-                session(app, settings, i);
-                cout << endl;
                 app.printer.printSession(app.sessionData);
                 cout << endl;
+            } else {
+                add_history(input.c_str());
+
+                int i = parseInt(input);
+
+                if (i <= 0) {
+                    run = false;
+                } else {
+                    session(app, settings, i);
+                    cout << endl;
+                    app.printer.printSession(app.sessionData);
+                    cout << endl;
+                }
             }
         }
     }
