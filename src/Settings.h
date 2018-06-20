@@ -7,6 +7,7 @@
  */
 struct Settings {
     bool playSound = true;
+    int soundVolume = 50;
 };
 
 

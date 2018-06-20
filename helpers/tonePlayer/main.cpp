@@ -23,18 +23,24 @@ int main(int argc, char **argv) {
     tp->init();
 
     std::string input;
+    int volume = 80;
 
     while (input != "q") {
         std::cin >> input;
         int tone = -1;
 
-        try {
-            tone = std::stoi(input);
-        } catch(...) {
-            break;
+        if (input.size() > 0 && input[0] == 'v') {
+            volume = std::stoi(input.substr(1));
+        } else {
+            try {
+                tone = std::stoi(input);
+            } catch(...) {
+                break;
+            }
+
+            std::cout << tones[tone] << " " << volume << std::endl;
+            tp->play(tones[tone], .5, volume);
         }
-        
-        tp->play(tones[tone], .5);
     }
 
     tp->destroy();

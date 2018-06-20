@@ -17,7 +17,7 @@ static const char channels = 2;
 static const int rate = 44100;
 static const int sampleBits = (bits / 8) * channels;
 static const int totalBufferSize = sampleBits * rate;
-static const int max = 0.75 * (1 << 15);  // Constant 0.75 is used in official libao example.
+static const int volumeMagic = (1 << 15);  // This number is used in official libao example.
 
 
 void TonePlayer::init() {
@@ -52,15 +52,17 @@ void TonePlayer::destroy() {
     delete[] buffer;
 }
 
-void TonePlayer::play(float freq, float fractionOfSecond) {
+void TonePlayer::play(float freq, float fractionOfSecond, int volume) {
     assert(_isInited == true);
     assert(0 < fractionOfSecond && fractionOfSecond <= 1.0);
+    assert(0 <= volume && volume <= 100);
 
     int numSamples = format.rate * fractionOfSecond;
     int bufSize = sampleBits * numSamples;
 
     for (int i = 0; i < numSamples; i++) {
-        int sample = (int)(max * sin(2 * M_PI * freq * ((float) i/format.rate)));
+        float volumeF = (volume / 100.0) * volumeMagic;
+        int sample = (int)(volumeF * sin(2 * M_PI * freq * ((float) i/format.rate)));
 
         // Put the same stuff in left and right channel.
         // I have no idea why it is done like that :(

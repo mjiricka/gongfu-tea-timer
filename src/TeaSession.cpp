@@ -62,10 +62,10 @@ int parseInt(const string &i) {
     }
 }
 
-void playEndTune(App &app) {
-    app.tonePlayer.play(380, .5);
-    app.tonePlayer.play(420, .5);
-    app.tonePlayer.play(500, 1);
+void playEndTune(App &app, int soundVolume) {
+    app.tonePlayer.play(380, .5, soundVolume);
+    app.tonePlayer.play(420, .5, soundVolume);
+    app.tonePlayer.play(500, 1, soundVolume);
 }
 
 const milliseconds sleepTime{200};
@@ -109,7 +109,7 @@ void session(App &app, Settings &settings, int durationInSeconds) {
     if (noAbort) {
         app.notifier.notify();
         if (settings.playSound && app.tonePlayer.isInited()) {
-            playEndTune(app);
+            playEndTune(app, settings.soundVolume);
         }
         app.sessionData.addSession(durationInSeconds, start);
     }

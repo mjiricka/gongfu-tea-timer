@@ -11,7 +11,7 @@ class TonePlayer {
 public:
     void init();
     void destroy();
-    void play(float freq, float fractionOfSecond);
+    void play(float freq, float fractionOfSecond, int volume);
     bool isInited();
 
 private:
