@@ -21,6 +21,7 @@ public:
     vector<seconds> getTimeDistances();
     seconds getSessionLength();
     system_clock::time_point getSessionStart();
+    system_clock::time_point getCurrentSessionEnd();
 
 private:
     struct SessionEntry {

@@ -13,6 +13,7 @@ using std::to_string;
 using std::chrono::system_clock;
 
 
+// TODO: longFormat is not used now?
 string Utils::seconds2string(int numSeconds, bool longFormat) {
     if (numSeconds == 0) {
         return "0s";
@@ -23,7 +24,7 @@ string Utils::seconds2string(int numSeconds, bool longFormat) {
 
         string hoursStr = hours == 0 ? "" : to_string(hours) + "h";
         string minutesStr = (minutes == 0) && (hours == 0) ? "" : to_string(minutes) + "m";
-        string secondsStr = seconds == 0 ? "" : to_string(seconds) + "s";
+        string secondsStr = (seconds == 0 || hours > 0) ? "" : to_string(seconds) + "s";
 
         string sep = longFormat ? " " : "";
         string result = hoursStr + sep + minutesStr + sep + secondsStr;

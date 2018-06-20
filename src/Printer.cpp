@@ -14,6 +14,9 @@ using std::cin;
 using std::endl;
 using std::string;
 using std::min;
+using std::chrono::duration_cast;
+using std::chrono::seconds;
+using std::chrono::system_clock;
 
 
 // TODO
@@ -132,7 +135,7 @@ void Printer::drawPrompt(const string &prompt) {
 void Printer::printSession(SessionData &sessionData) {
     if (sessionData.getSessionNum()) {
         cout << col1 << "Session duration: " << colReset
-            << Utils::seconds2string(sessionData.getSessionLength().count(), true)
+            << Utils::seconds2string(sessionData.getSessionLength().count(), false)
             << " (started at " << Utils::getTime(sessionData.getSessionStart()) << ")" << endl;
 
         cout << col1 << "Steeps:           " << colReset << sessionData.getSessionNum() << endl;
@@ -150,8 +153,14 @@ void Printer::printSession(SessionData &sessionData) {
             for (auto it = timeDistances.begin(); it != timeDistances.end(); it++) {
                 cout << Utils::seconds2string(it->count(), false) << " ";
             }
+
             cout << endl;
         }
+
+        auto sinceLastSteep = duration_cast<seconds>(system_clock::now() - sessionData.getCurrentSessionEnd());
+        cout << col1 << "Since last steep: " << colReset
+            << Utils::seconds2string(sinceLastSteep.count(), false)
+            << " (steeped at " << Utils::getTime(sessionData.getCurrentSessionEnd()) << ")" << endl;
     } else {
         cout << "Session have not start yet!" << endl;
     }

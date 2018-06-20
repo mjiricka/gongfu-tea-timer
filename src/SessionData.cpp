@@ -1,4 +1,5 @@
 #include "SessionData.h"
+#include <cassert>
 #include <vector>
 
 
@@ -8,6 +9,7 @@ using std::chrono::seconds;
 using std::chrono::duration_cast;
 
 
+// TODO: change duration type to seconds, because it is duration in seconds!
 void SessionData::addSession(int duration, system_clock::time_point startTime) {
     SessionEntry se;
     se.duration = duration;
@@ -41,6 +43,7 @@ vector<seconds> SessionData::getTimeDistances() {
     auto prev = it;
 
     while (++it != data.end()) {
+        // TODO: Maybe also add steeping length?
         v.push_back(duration_cast<seconds>(it->startTime - prev->startTime));
         prev = it;
     }
@@ -54,5 +57,11 @@ seconds SessionData::getSessionLength() {
 
 system_clock::time_point SessionData::getSessionStart() {
     return sessionStart;
+}
+
+system_clock::time_point SessionData::getCurrentSessionEnd() {
+    assert(data.size() > 0);
+    auto dataLast = (data.end() - 1);
+    return (dataLast->startTime + seconds{dataLast->duration});
 }
 
