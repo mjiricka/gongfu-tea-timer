@@ -40,10 +40,17 @@ public:
             cout << "(Check your /etc/libao.conf)" << endl;
             cout << "       Continuing without playing sound!" << endl;
         }
+
+        try {
+            notifier.init();
+        } catch (runtime_error &) {
+            cout << "ERROR: Desktop notifications could not be initialized!" << endl;
+        }
     }
 
     ~App() {
         if (tonePlayer.isInited()) tonePlayer.destroy();
+        if (notifier.isInited()) notifier.destroy();
     }
 
     Printer printer;
@@ -107,7 +114,9 @@ void session(App &app, Settings &settings, int durationInSeconds) {
     } while ((passedTime <= waitTime) && noAbort);
 
     if (noAbort) {
-        app.notifier.notify();
+        if (settings.showNotifications && app.notifier.isInited()) {
+            app.notifier.notify();
+        }
         if (settings.playSound && app.tonePlayer.isInited()) {
             playEndTune(app, settings.soundVolume);
         }

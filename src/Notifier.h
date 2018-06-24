@@ -6,13 +6,15 @@
 
 class Notifier {
 public:
-    Notifier();
-    ~Notifier();
+    void init();
+    void destroy();
 
     void notify();
+    bool isInited();
 
 private:
     GApplication *application;
+    bool _isInited = false;
 };
 
 
