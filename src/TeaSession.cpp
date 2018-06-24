@@ -75,52 +75,91 @@ void playEndTune(App &app, int soundVolume) {
     app.tonePlayer.play(500, 1, soundVolume);
 }
 
-const milliseconds sleepTime{200};
+const milliseconds sleepTime{100};
 
+
+string getProgressBar(bool doAlarms) {
+    static const string on("on");
+    static const string off("off");
+
+    return string(" [Press 'a' to abort, +/- to adjust time, t: toggle alarms [now " +
+            (doAlarms ? on : off) + "]]> ");
+}
+
+
+// TODO: Why did I not used seconds instead of int?
 void session(App &app, Settings &settings, int durationInSeconds) {
+    int duration = durationInSeconds;
+    seconds waitTime{durationInSeconds};
+    int totalMilliseconds = durationInSeconds * 1000;
+
     const system_clock::time_point start = system_clock::now();
-    const seconds waitTime{durationInSeconds};
     milliseconds passedTime;
-    const int totalMilliseconds = durationInSeconds * 1000;
     bool noAbort = true;
+    bool doAlarms = true;
 
     app.consoleReader.startSession();
 
-    app.printer.drawProgressBar(80, 0.0, 0, durationInSeconds);
-    app.printer.drawNotice(" [Press 'a' to abort]> ");
+    // This is the first draw to show something fast without waiting (=sleeping).
+    // Second draw is after user input to ensure that it will always reflect the
+    // last input.
+    app.printer.drawProgressBar(80, 0.0, 0, duration);
+    app.printer.drawNotice(getProgressBar(doAlarms));
     do {
+        // Loop sleep.
         sleep_for(sleepTime);
-        system_clock::time_point end = system_clock::now();
 
-        passedTime = duration_cast<milliseconds>(end - start);
-        seconds passedTimeSeconds = duration_cast<seconds>(passedTime);
-
-        app.printer.eraseOutput(1);
-
-        double fraction = static_cast<double>(passedTime.count()) / totalMilliseconds;
-        app.printer.drawProgressBar(80, fraction, passedTimeSeconds.count(), durationInSeconds);
-        app.printer.drawNotice(" [Press 'a' to abort]> ");
-
+        // User input.
         if (app.consoleReader.isInput()) {
             char userInput = app.consoleReader.getInput();
             switch (userInput) {
                 case 'a':
-                    app.printer.eraseOutput(1);
-                    app.printer.drawCancelledProgressBar(80, fraction, passedTimeSeconds.count(), durationInSeconds);
                     noAbort = false;
                     break;
+
+                case 't':
+                    doAlarms = ! doAlarms;
+                    break;
+
+                case '+':
+                case '-':
+                    if (userInput == '+') duration += 1;
+                    else duration -= 1;
+
+                    waitTime = seconds{duration};
+                    totalMilliseconds = duration * 1000;
+                    break;
             }
+        }
+
+        // Calculate current timing.
+        system_clock::time_point end = system_clock::now();
+        passedTime = duration_cast<milliseconds>(end - start);
+        seconds passedTimeSeconds = duration_cast<seconds>(passedTime);
+
+        // Re-draw printer.
+        double fraction = static_cast<double>(passedTime.count()) / totalMilliseconds;
+        app.printer.eraseOutput(1);
+        if (noAbort) {
+            app.printer.drawProgressBar(80, fraction, passedTimeSeconds.count(), duration);
+            app.printer.drawNotice(getProgressBar(doAlarms));
+        } else {
+            app.printer.drawCancelledProgressBar(80, fraction, passedTimeSeconds.count(), duration);
         }
     } while ((passedTime <= waitTime) && noAbort);
 
     if (noAbort) {
-        if (settings.showNotifications && app.notifier.isInited()) {
-            app.notifier.notify();
+        // Signal end of session to the user.
+        if (doAlarms) {
+            if (settings.showNotifications && app.notifier.isInited()) {
+                app.notifier.notify();
+            }
+            if (settings.playSound && app.tonePlayer.isInited()) {
+                playEndTune(app, settings.soundVolume);
+            }
         }
-        if (settings.playSound && app.tonePlayer.isInited()) {
-            playEndTune(app, settings.soundVolume);
-        }
-        app.sessionData.addSession(durationInSeconds, start);
+        // Record session.
+        app.sessionData.addSession(duration, start);
     }
 
     app.printer.clearLine();
