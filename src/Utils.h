@@ -3,9 +3,11 @@
 
 #include <string>
 #include <chrono>
+#include <vector>
 
 using std::string;
 using std::chrono::system_clock;
+using std::vector;
 
 
 /**
@@ -22,6 +24,9 @@ public:
     static void trim(std::string &s);
 
     static string getTime(system_clock::time_point tp);
+
+    static vector<string> split(const string &str, const string &delim);
+    static void printStrVector(const vector<string> &data);
 };
 
 #endif /* UTILS_H */

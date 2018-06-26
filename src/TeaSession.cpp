@@ -14,6 +14,7 @@
 #include "Settings.h"
 #include "Utils.h"
 #include "Notifier.h"
+#include "Actions.h"
 
 
 using std::cout;
@@ -28,6 +29,9 @@ using std::chrono::duration_cast;
 using std::invalid_argument;
 using std::stoi;
 using std::runtime_error;
+
+
+// TODO: Awesome idea: possibility to run timer in background.
 
 
 class App {
@@ -200,30 +204,36 @@ void TeaSession::run() {
                 // Skip empty lines.
             } else {
                 // Regular command.
-
                 add_history(input.c_str());
 
+                // TODO: Rework this into action.
                 if (input == "info" || input == "i") {
-
                     app.printer.printSession(app.sessionData);
                     cout << endl;
                 } else {
                     add_history(input.c_str());
 
-                    int i = parseInt(input);
-
-                    if (i <= 0) {
-                        run = false;
+                    auto inputSplit = Utils::split(input, " ");
+                    Utils::printStrVector(inputSplit);
+                    Action *action = Action::factory(inputSplit);
+                    if (action != NULL) {
+                        action->execute(settings, app.sessionData);
+                        delete action;
                     } else {
-                        session(app, settings, i);
-                        cout << endl;
-                        app.printer.printSession(app.sessionData);
-                        cout << endl;
+                        int i = parseInt(input);
+
+                        if (i <= 0) {
+                            run = false;
+                        } else {
+                            session(app, settings, i);
+                            cout << endl;
+                            app.printer.printSession(app.sessionData);
+                            cout << endl;
+                        }
                     }
                 }
             }
         }
     }
-
 }
 

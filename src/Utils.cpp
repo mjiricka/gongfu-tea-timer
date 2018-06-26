@@ -1,16 +1,21 @@
 #include "Utils.h"
 
+#include <iostream>
 #include <algorithm>
 #include <functional>
 #include <string>
+#include <vector>
 #include <chrono>
 #include <ctime>
 
 using std::string;
+using std::vector;
 using std::time_t;
 using std::remove;
 using std::to_string;
 using std::chrono::system_clock;
+using std::cout;
+using std::endl;
 
 
 // TODO: longFormat is not used now?
@@ -74,5 +79,29 @@ string Utils::getTime(system_clock::time_point tp) {
     strftime(buffer, 80, "%R", timeinfo);
 
     return string(buffer);
+}
+
+// Taken from:
+// https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
+vector<string> Utils::split(const string &str, const string &delim) {
+    vector<string> tokens;
+    size_t prev = 0, pos = 0;
+
+    do {
+        pos = str.find(delim, prev);
+        if (pos == string::npos) pos = str.length();
+        string token = str.substr(prev, pos-prev);
+        if (!token.empty()) tokens.push_back(token);
+        prev = pos + delim.length();
+    } while (pos < str.length() && prev < str.length());
+
+    return tokens;
+}
+
+void Utils::printStrVector(const vector<string> &data) {
+    for (auto i = data.begin(); i != data.end(); ++i) {
+        cout << "[" << *i << "] ";
+    }
+    cout << endl;
 }
 
