@@ -4,9 +4,9 @@
 #include <thread>
 #include <chrono>
 #include <string>
-#include <stdexcept>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include "App.h"
 #include "Printer.h"
 #include "TonePlayer.h"
 #include "ConsoleReader.h"
@@ -28,41 +28,9 @@ using std::chrono::system_clock;
 using std::chrono::duration_cast;
 using std::invalid_argument;
 using std::stoi;
-using std::runtime_error;
 
 
 // TODO: Awesome idea: possibility to run timer in background.
-
-
-class App {
-public:
-    App() : printer(true) {
-        try {
-            tonePlayer.init();
-        } catch (runtime_error &) {
-            cout << "ERROR: Sound could not be initialized! ";
-            cout << "(Check your /etc/libao.conf)" << endl;
-            cout << "       Continuing without playing sound!" << endl;
-        }
-
-        try {
-            notifier.init();
-        } catch (runtime_error &) {
-            cout << "ERROR: Desktop notifications could not be initialized!" << endl;
-        }
-    }
-
-    ~App() {
-        if (tonePlayer.isInited()) tonePlayer.destroy();
-        if (notifier.isInited()) notifier.destroy();
-    }
-
-    Printer printer;
-    TonePlayer tonePlayer;
-    ConsoleReader consoleReader;
-    SessionData sessionData;
-    Notifier notifier;
-};
 
 
 int parseInt(const string &i) {
