@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include "Settings.h"
-#include "SessionData.h"
+#include "App.h"
 
 
 using std::string;
@@ -25,11 +25,17 @@ Action* Action::factory(vector<string> &input) {
         } else {
             return new Volume("");
         }
+    } if (Info::isMine(input)) {
+        return new Info();
     } else {
         return NULL;
     }
 }
 
+
+/********************************************************************
+ * Volume
+ ********************************************************************/
 
 Volume::Volume(string param) {
     this->param = param;
@@ -47,11 +53,27 @@ bool Volume::isMine(vector<string> &input) {
     return (input.size() > 0) && (input.front() == "volume");
 }
 
-void Volume::execute(Settings &settings, SessionData &sessionData) {
+void Volume::execute(Settings &settings, App &app) {
     if (param == "") {
         print(settings);
     } else {
         set(settings, stoi(param));
     }
+}
+
+
+/********************************************************************
+ * Info
+ ********************************************************************/
+
+bool Info::isMine(vector<string> &input) {
+    return (input.size() > 0) && (
+            input.front() == "i" ||
+            input.front() == "info");
+}
+
+void Info::execute(Settings &settings, App &app) {
+    app.printer.printSession(app.sessionData);
+    cout << endl;
 }
 

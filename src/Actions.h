@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include "Settings.h"
-#include "SessionData.h"
+#include "App.h"
 
 
 using std::string;
@@ -17,7 +17,7 @@ using std::vector;
 class Action {
 public:
     static Action* factory(vector<string> &input);
-    virtual void execute(Settings &settings, SessionData &sessionData) = 0;
+    virtual void execute(Settings &settings, App &app) = 0;
     virtual ~Action();
 };
 
@@ -28,13 +28,21 @@ public:
 
     Volume(string secondParam);
 
-    virtual void execute(Settings &settings, SessionData &sessionData);
+    virtual void execute(Settings &settings, App &app);
 
 private:
     string param;
 
     void set(Settings &settings, int volume);
     void print(Settings &settings);
+};
+
+
+class Info : public Action {
+public:
+    static bool isMine(vector<string> &input);
+
+    virtual void execute(Settings &settings, App &app);
 };
 
 

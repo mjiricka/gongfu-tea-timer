@@ -174,30 +174,23 @@ void TeaSession::run() {
                 // Regular command.
                 add_history(input.c_str());
 
-                // TODO: Rework this into action.
-                if (input == "info" || input == "i") {
-                    app.printer.printSession(app.sessionData);
-                    cout << endl;
+                auto inputSplit = Utils::split(input, " ");
+                //Utils::printStrVector(inputSplit);
+                Action *action = Action::factory(inputSplit);
+                if (action != NULL) {
+                    action->execute(settings, app);
+                    delete action;
                 } else {
-                    add_history(input.c_str());
+                    // TODO: rework this into Action.
+                    int i = parseInt(input);
 
-                    auto inputSplit = Utils::split(input, " ");
-                    Utils::printStrVector(inputSplit);
-                    Action *action = Action::factory(inputSplit);
-                    if (action != NULL) {
-                        action->execute(settings, app.sessionData);
-                        delete action;
+                    if (i <= 0) {
+                        run = false;
                     } else {
-                        int i = parseInt(input);
-
-                        if (i <= 0) {
-                            run = false;
-                        } else {
-                            session(app, settings, i);
-                            cout << endl;
-                            app.printer.printSession(app.sessionData);
-                            cout << endl;
-                        }
+                        session(app, settings, i);
+                        cout << endl;
+                        app.printer.printSession(app.sessionData);
+                        cout << endl;
                     }
                 }
             }
