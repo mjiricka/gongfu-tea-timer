@@ -143,7 +143,7 @@ void Printer::printSession(SessionData &sessionData) {
         cout << col1 << "Timing:           " << colReset;
         auto timing = sessionData.getTiming();
         for (auto it = timing.begin(); it != timing.end(); it++) {
-            cout << *it << " ";
+            cout << it->count() << " ";
         }
         cout << endl;
 

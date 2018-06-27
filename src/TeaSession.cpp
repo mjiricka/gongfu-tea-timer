@@ -59,11 +59,8 @@ string getProgressBar(bool doAlarms) {
 }
 
 
-// TODO: Why did I not used seconds instead of int?
-void session(App &app, Settings &settings, int durationInSeconds) {
-    int duration = durationInSeconds;
-    seconds waitTime{durationInSeconds};
-    int totalMilliseconds = durationInSeconds * 1000;
+void session(App &app, Settings &settings, seconds duration) {
+    seconds currentDuration = duration;
 
     const system_clock::time_point start = system_clock::now();
     milliseconds passedTime;
@@ -75,7 +72,7 @@ void session(App &app, Settings &settings, int durationInSeconds) {
     // This is the first draw to show something fast without waiting (=sleeping).
     // Second draw is after user input to ensure that it will always reflect the
     // last input.
-    app.printer.drawProgressBar(80, 0.0, 0, duration);
+    app.printer.drawProgressBar(80, 0.0, 0, currentDuration.count());
     app.printer.drawNotice(getProgressBar(doAlarms));
     do {
         // Loop sleep.
@@ -95,11 +92,8 @@ void session(App &app, Settings &settings, int durationInSeconds) {
 
                 case '+':
                 case '-':
-                    if (userInput == '+') duration += 1;
-                    else duration -= 1;
-
-                    waitTime = seconds{duration};
-                    totalMilliseconds = duration * 1000;
+                    if (userInput == '+') currentDuration += seconds{1};
+                    else currentDuration -= seconds{1};
                     break;
             }
         }
@@ -110,15 +104,15 @@ void session(App &app, Settings &settings, int durationInSeconds) {
         seconds passedTimeSeconds = duration_cast<seconds>(passedTime);
 
         // Re-draw printer.
-        double fraction = static_cast<double>(passedTime.count()) / totalMilliseconds;
+        double fraction = static_cast<double>(passedTime.count()) / duration_cast<milliseconds>(currentDuration).count();
         app.printer.eraseOutput(1);
         if (noAbort) {
-            app.printer.drawProgressBar(80, fraction, passedTimeSeconds.count(), duration);
+            app.printer.drawProgressBar(80, fraction, passedTimeSeconds.count(), currentDuration.count());
             app.printer.drawNotice(getProgressBar(doAlarms));
         } else {
-            app.printer.drawCancelledProgressBar(80, fraction, passedTimeSeconds.count(), duration);
+            app.printer.drawCancelledProgressBar(80, fraction, passedTimeSeconds.count(), currentDuration.count());
         }
-    } while ((passedTime <= waitTime) && noAbort);
+    } while ((passedTime <= currentDuration) && noAbort);
 
     if (noAbort) {
         // Signal end of session to the user.
@@ -131,7 +125,7 @@ void session(App &app, Settings &settings, int durationInSeconds) {
             }
         }
         // Record session.
-        app.sessionData.addSession(duration, start);
+        app.sessionData.addSession(currentDuration, start);
     }
 
     app.printer.clearLine();
@@ -187,7 +181,7 @@ void TeaSession::run() {
                     if (i <= 0) {
                         run = false;
                     } else {
-                        session(app, settings, i);
+                        session(app, settings, seconds{i});
                         cout << endl;
                         app.printer.printSession(app.sessionData);
                         cout << endl;

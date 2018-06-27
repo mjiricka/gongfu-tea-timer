@@ -15,9 +15,9 @@ using std::chrono::seconds;
  */
 class SessionData {
 public:
-    void addSession(int duration, system_clock::time_point startTime);
+    void addSession(seconds duration, system_clock::time_point startTime);
     size_t getSessionNum();
-    vector<int> getTiming();
+    vector<seconds> getTiming();
     vector<seconds> getTimeDistances();
     seconds getSessionLength();
     system_clock::time_point getSessionStart();
@@ -25,7 +25,7 @@ public:
 
 private:
     struct SessionEntry {
-        int duration;
+        seconds duration;
         system_clock::time_point startTime;
     };
 

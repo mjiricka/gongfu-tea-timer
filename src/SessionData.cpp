@@ -9,8 +9,7 @@ using std::chrono::seconds;
 using std::chrono::duration_cast;
 
 
-// TODO: change duration type to seconds, because it is duration in seconds!
-void SessionData::addSession(int duration, system_clock::time_point startTime) {
+void SessionData::addSession(seconds duration, system_clock::time_point startTime) {
     SessionEntry se;
     se.duration = duration;
     se.startTime = startTime;
@@ -26,8 +25,8 @@ size_t SessionData::getSessionNum() {
     return data.size();
 }
 
-vector<int> SessionData::getTiming() {
-    auto v = vector<int>();
+vector<seconds> SessionData::getTiming() {
+    auto v = vector<seconds>();
 
     for (auto it = data.begin(); it != data.end(); it++) {
         v.push_back(it->duration);
@@ -62,6 +61,6 @@ system_clock::time_point SessionData::getSessionStart() {
 system_clock::time_point SessionData::getCurrentSessionEnd() {
     assert(data.size() > 0);
     auto dataLast = (data.end() - 1);
-    return (dataLast->startTime + seconds{dataLast->duration});
+    return (dataLast->startTime + dataLast->duration);
 }
 
