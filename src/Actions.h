@@ -26,7 +26,7 @@ class Volume : public Action {
 public:
     static bool isMine(vector<string> &input);
 
-    Volume(string secondParam);
+    Volume(string param);
 
     virtual void execute(Settings &settings, App &app);
 
@@ -43,6 +43,19 @@ public:
     static bool isMine(vector<string> &input);
 
     virtual void execute(Settings &settings, App &app);
+};
+
+
+class Delete : public Action {
+public:
+    static bool isMine(vector<string> &input);
+
+    Delete(string secondParam);
+
+    virtual void execute(Settings &settings, App &app);
+
+private:
+    string param;
 };
 
 

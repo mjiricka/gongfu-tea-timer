@@ -27,6 +27,12 @@ Action* Action::factory(vector<string> &input) {
         }
     } if (Info::isMine(input)) {
         return new Info();
+    } if (Delete::isMine(input)) {
+        if (input.size() == 2) {
+            return new Delete(input[1]);
+        } else {
+            return new Delete("");
+        }
     } else {
         return NULL;
     }
@@ -75,5 +81,31 @@ bool Info::isMine(vector<string> &input) {
 void Info::execute(Settings &settings, App &app) {
     app.printer.printSession(app.sessionData);
     cout << endl;
+}
+
+
+/********************************************************************
+ * Delete
+ ********************************************************************/
+
+Delete::Delete(string param) {
+    this->param = param;
+}
+
+bool Delete::isMine(vector<string> &input) {
+    return (input.size() > 0) && (input.front() == "delete");
+}
+
+void Delete::execute(Settings &settings, App &app) {
+    int sessionIdx;
+    if (param == "") {
+        sessionIdx = app.sessionData.getSessionNum() - 1;
+    } else {
+        sessionIdx = stoi(param);
+        if (sessionIdx < 0) {
+            sessionIdx = app.sessionData.getSessionNum() + sessionIdx;
+        }
+    }
+    app.sessionData.deleteSession(sessionIdx);
 }
 

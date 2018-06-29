@@ -64,3 +64,9 @@ system_clock::time_point SessionData::getCurrentSessionEnd() {
     return (dataLast->startTime + dataLast->duration);
 }
 
+void SessionData::deleteSession(size_t sessionNum) {
+    assert(sessionNum >= 0 && sessionNum < data.size());
+
+    data.erase(data.begin()+sessionNum);
+}
+

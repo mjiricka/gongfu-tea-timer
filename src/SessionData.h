@@ -22,6 +22,7 @@ public:
     seconds getSessionLength();
     system_clock::time_point getSessionStart();
     system_clock::time_point getCurrentSessionEnd();
+    void deleteSession(size_t sessionNum);
 
 private:
     struct SessionEntry {
