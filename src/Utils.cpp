@@ -18,8 +18,7 @@ using std::cout;
 using std::endl;
 
 
-// TODO: longFormat is not used now?
-string Utils::seconds2string(int numSeconds, bool longFormat) {
+string Utils::seconds2string(int numSeconds) {
     if (numSeconds == 0) {
         return "0s";
     } else {
@@ -31,7 +30,7 @@ string Utils::seconds2string(int numSeconds, bool longFormat) {
         string minutesStr = (minutes == 0) && (hours == 0) ? "" : to_string(minutes) + "m";
         string secondsStr = (seconds == 0 || hours > 0) ? "" : to_string(seconds) + "s";
 
-        string sep = longFormat ? " " : "";
+        static const string sep = " ";
         string result = hoursStr + sep + minutesStr + sep + secondsStr;
 
         Utils::trim(result);

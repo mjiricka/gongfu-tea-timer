@@ -15,7 +15,7 @@ using std::vector;
  */
 class Utils {
 public:
-    static string seconds2string(int seconds, bool longFormat);
+    static string seconds2string(int seconds);
     static string padRight(std::string const &str, size_t s);
     static string padLeft(string const &str, size_t s);
 
