@@ -59,5 +59,13 @@ private:
 };
 
 
+class Reset : public Action {
+public:
+    static bool isMine(vector<string> &input);
+
+    virtual void execute(Settings &settings, App &app);
+};
+
+
 #endif /* ACTIONS_H */
 

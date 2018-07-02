@@ -33,6 +33,8 @@ Action* Action::factory(vector<string> &input) {
         } else {
             return new Delete("");
         }
+    } if (Reset::isMine(input)) {
+        return new Reset();
     } else {
         return NULL;
     }
@@ -107,5 +109,19 @@ void Delete::execute(Settings &settings, App &app) {
         }
     }
     app.sessionData.deleteSession(sessionIdx);
+}
+
+
+/********************************************************************
+ * Reset
+ ********************************************************************/
+
+bool Reset::isMine(vector<string> &input) {
+    return (input.size() > 0) && (input.front() == "reset");
+}
+
+void Reset::execute(Settings &settings, App &app) {
+    app.sessionData = SessionData();
+    app.printer.printSession(app.sessionData);
 }
 
