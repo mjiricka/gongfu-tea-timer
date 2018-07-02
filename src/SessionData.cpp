@@ -15,10 +15,6 @@ void SessionData::addSession(seconds duration, system_clock::time_point startTim
     se.startTime = startTime;
 
     data.push_back(se);
-
-    if (data.size() == 1) {
-        sessionStart = startTime;
-    }
 }
 
 size_t SessionData::getSessionNum() {
@@ -51,11 +47,13 @@ vector<seconds> SessionData::getTimeDistances() {
 }
 
 seconds SessionData::getSessionLength() {
-    return duration_cast<seconds>(system_clock::now() - sessionStart);
+    return duration_cast<seconds>(system_clock::now() - getSessionStart());
 }
 
 system_clock::time_point SessionData::getSessionStart() {
-    return sessionStart;
+    assert(data.size() > 0);
+
+    return data.front().startTime;
 }
 
 system_clock::time_point SessionData::getCurrentSessionEnd() {

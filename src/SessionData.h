@@ -31,7 +31,6 @@ private:
     };
 
     vector<SessionEntry> data;
-    system_clock::time_point sessionStart;
 };
 
 
