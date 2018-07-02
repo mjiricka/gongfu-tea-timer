@@ -9,22 +9,26 @@ using std::chrono::seconds;
 using std::chrono::duration_cast;
 
 
-void SessionData::addSession(seconds duration, system_clock::time_point startTime) {
-    SessionEntry se;
-    se.duration = duration;
-    se.startTime = startTime;
+SessionData::SessionData() {
+    currentSession = Session();
+}
 
-    data.push_back(se);
+void SessionData::addSession(seconds duration, system_clock::time_point startTime) {
+    Steep steep;
+    steep.duration = duration;
+    steep.startTime = startTime;
+
+    currentSession.steeps.push_back(steep);
 }
 
 size_t SessionData::getSessionNum() {
-    return data.size();
+    return currentSession.steeps.size();
 }
 
 vector<seconds> SessionData::getTiming() {
     auto v = vector<seconds>();
 
-    for (auto it = data.begin(); it != data.end(); it++) {
+    for (auto it = currentSession.steeps.begin(); it != currentSession.steeps.end(); it++) {
         v.push_back(it->duration);
     }
 
@@ -34,10 +38,10 @@ vector<seconds> SessionData::getTiming() {
 vector<seconds> SessionData::getTimeDistances() {
     auto v = vector<seconds>();
 
-    auto it = data.begin();
+    auto it = currentSession.steeps.begin();
     auto prev = it;
 
-    while (++it != data.end()) {
+    while (++it != currentSession.steeps.end()) {
         // TODO: Maybe also add steeping length?
         v.push_back(duration_cast<seconds>(it->startTime - prev->startTime));
         prev = it;
@@ -51,20 +55,28 @@ seconds SessionData::getSessionLength() {
 }
 
 system_clock::time_point SessionData::getSessionStart() {
-    assert(data.size() > 0);
+    assert(currentSession.steeps.size() > 0);
 
-    return data.front().startTime;
+    return currentSession.steeps.front().startTime;
 }
 
 system_clock::time_point SessionData::getCurrentSessionEnd() {
-    assert(data.size() > 0);
-    auto dataLast = (data.end() - 1);
+    assert(currentSession.steeps.size() > 0);
+    auto dataLast = (currentSession.steeps.end() - 1);
     return (dataLast->startTime + dataLast->duration);
 }
 
 void SessionData::deleteSession(size_t sessionNum) {
-    assert(sessionNum >= 0 && sessionNum < data.size());
+    assert(sessionNum >= 0 && sessionNum < currentSession.steeps.size());
 
-    data.erase(data.begin()+sessionNum);
+    currentSession.steeps.erase(currentSession.steeps.begin()+sessionNum);
+}
+
+void SessionData::setTitle(string title) {
+    currentSession.title = title;
+}
+
+string SessionData::getTitle() {
+    return currentSession.title;
 }
 

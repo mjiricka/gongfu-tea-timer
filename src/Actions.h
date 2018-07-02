@@ -67,5 +67,21 @@ public:
 };
 
 
+class Title : public Action {
+public:
+    static bool isMine(vector<string> &input);
+
+    Title(string param);
+
+    virtual void execute(Settings &settings, App &app);
+
+private:
+    string param;
+
+    void set(SessionData &sessionData, string title);
+    void print(SessionData &sessionData);
+};
+
+
 #endif /* ACTIONS_H */
 

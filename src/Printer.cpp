@@ -133,7 +133,13 @@ void Printer::drawPrompt(const string &prompt) {
 }
 
 void Printer::printSession(SessionData &sessionData) {
+    string title = sessionData.getTitle();
+
     if (sessionData.getSessionNum()) {
+        if (title.size() > 0) {
+            cout << col1 << "Title:            " << colReset << title << endl;
+        }
+
         cout << col1 << "Session duration: " << colReset
             << Utils::seconds2string(sessionData.getSessionLength().count())
             << " (started at " << Utils::getTime(sessionData.getSessionStart()) << ")" << endl;
@@ -162,7 +168,11 @@ void Printer::printSession(SessionData &sessionData) {
             << Utils::seconds2string(sinceLastSteep.count())
             << " (steeped at " << Utils::getTime(sessionData.getCurrentSessionEnd()) << ")" << endl;
     } else {
-        cout << "Session have not start yet!" << endl;
+        if (title.size() > 0) {
+            cout << "Session \"" + title + "\" have not start yet!" << endl;
+        } else {
+            cout << "Session have not start yet!" << endl;
+        }
     }
 }
 

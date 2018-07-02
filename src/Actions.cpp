@@ -35,6 +35,13 @@ Action* Action::factory(vector<string> &input) {
         }
     } if (Reset::isMine(input)) {
         return new Reset();
+    } if (Title::isMine(input)) {
+        if (input.size() >= 2) {
+            // TODO: here join all params together!
+            return new Title(input[1]);
+        } else {
+            return new Title("");
+        }
     } else {
         return NULL;
     }
@@ -123,5 +130,34 @@ bool Reset::isMine(vector<string> &input) {
 void Reset::execute(Settings &settings, App &app) {
     app.sessionData = SessionData();
     app.printer.printSession(app.sessionData);
+}
+
+
+/********************************************************************
+ * Title
+ ********************************************************************/
+
+Title::Title(string param) {
+    this->param = param;
+}
+
+void Title::set(SessionData &sessionData, string title) {
+    sessionData.setTitle(title);
+}
+
+void Title::print(SessionData &sessionData) {
+    cout << sessionData.getTitle() << endl;
+}
+
+bool Title::isMine(vector<string> &input) {
+    return (input.size() > 0) && (input.front() == "title");
+}
+
+void Title::execute(Settings &settings, App &app) {
+    if (param == "") {
+        print(app.sessionData);
+    } else {
+        set(app.sessionData, param);
+    }
 }
 

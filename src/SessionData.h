@@ -3,9 +3,11 @@
 
 #include <vector>
 #include <chrono>
+#include <string>
 
 
 using std::vector;
+using std::string;
 using std::chrono::system_clock;
 using std::chrono::seconds;
 
@@ -15,6 +17,8 @@ using std::chrono::seconds;
  */
 class SessionData {
 public:
+    SessionData();
+
     void addSession(seconds duration, system_clock::time_point startTime);
     size_t getSessionNum();
     vector<seconds> getTiming();
@@ -23,14 +27,21 @@ public:
     system_clock::time_point getSessionStart();
     system_clock::time_point getCurrentSessionEnd();
     void deleteSession(size_t sessionNum);
+    void setTitle(string title);
+    string getTitle();
 
 private:
-    struct SessionEntry {
+    struct Steep {
         seconds duration;
         system_clock::time_point startTime;
     };
 
-    vector<SessionEntry> data;
+    struct Session {
+        string title;
+        vector<Steep> steeps;
+    };
+
+    Session currentSession;
 };
 
 
